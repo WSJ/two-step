@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+
+        <title>TwoStep</title>
+        <meta name="title" content="TwoStep" />
+        <meta property="og:title" content="TwoStep" />
+        <meta name="twitter:title" content="TwoStep" />
+
+		<meta name="description" content="JS library for scrollytelling, from The Wall Street Journal.">
+        <meta property="og:description" content="JS library for scrollytelling, from The Wall Street Journal." />
+		<meta name="twitter:description" content="JS library for scrollytelling, from The Wall Street Journal.">
+    
+		<link rel="canonical" href="http://wsj.github.io/two-step/">
+		<meta property="og:url" content="http://wsj.github.io/two-step/">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+        <style>
+          /* Needed for TwoStep to work */
+          .parent {
+              display: flex;
+              margin: 50px auto 20px;
+          }
+          .narrative {
+              width: 33.3%;
+          }
+          .narrative-item {
+              min-height: 300px;
+              color: #ccc;
+              transition: color 200ms;
+              padding-right: 10px;
+              font-size: 20px;
+          }
+          .narrative-item.active {
+              color: black;
+          }
+          .rightcol {
+              width: 66.6%;
+          }
+          .chart {
+              width: 100%;
+              height: 400px;
+              background: rgb(228, 228, 228);
+              padding: 100px;
+              box-sizing: border-box;
+              text-align: center;
+              font-size: 30px;
+          }
+          @media screen and (max-width: 600px) {
+              .narrative, .rightcol {
+                  width: 50%;
+              }
+              .chart {
+                  height: 200px;
+                  font-size: 16px;
+                  padding: 8px;
+              }
+          }
+        
+        /* Page styling */
+        h2 {
+            font-size: 20px;
+            margin-top: 0;
+        }
+        .subhead {
+            font-size: 130%;
+            font-weight: 500;
+            color: #777;
+        }
+        .main-body {
+            background: rgb(240, 247, 247);
+            padding: 24px 26px 22px 26px;
+            max-width: 600px;
+            font-size: 16px;
+            margin: 30px auto;
+        }
+        footer {
+            padding: 20px 0;
+        }
+        .github-link {
+            margin-top: 10px;
+        }
+
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+        
+            <header>
+        
+                <h1>TwoStep</h1>
+                <p class="subhead">A JavaScript library for scrollytelling, by <em>The Wall Street Journal</em>.</p>
+            </header>
+        
+
+            <div class="main-body">
+                
+                <p><a href="http://github.com/wsj/two-step/"><strong>TwoStep</strong></a> is a JavaScript library for “scrollytelling”, which is dynamically changing charts (or triggering whatever) as text scrolls into view.</p>
+                
+                <p>It implements best practices for scrollytelling, which means built-in keyboard shortcuts, no scrolljacking and reliable “sticky” behaviour.</p>
+                                  
+                <p>As seen on WSJ.com in <a href="https://www.wsj.com/graphics/american-workplace-then-and-now/">Then and Now:
+The Big Shift at Work</a> and <a href="https://www.wsj.com/articles/look-inside-the-devos-family-office-1510157138">Look Inside the DeVos Family Office</a>. Or scroll down for a live example.</p>
+                                
+                <p><a class="github-link btn btn-default" role="button" href="http://github.com/wsj/two-step/">View on GitHub</a></p>
+                
+            </div>
+            
+            <!-- MARKUP FOR TWOSTEP INSTANCE -->
+            <div class="parent">
+                <div class="narrative">
+                    <div class="narrative-item">
+                        Here we go! If you're reading this, that means...
+                    </div>
+                    <div class="narrative-item">
+                         Isn't scrollytelling fun?
+                     </div>
+                     <div class="narrative-item">
+                         This simple example isn't really optimised for mobile...
+                     </div>
+                </div>
+                <div class="rightcol">
+                    <div class="chart">
+                        Scroll down to activate me!
+                    </div>
+                </div>
+            </div><!-- .parent -->
+            
+            <div class="main-body">
+                
+                
+                <h2>More examples</h2>
+                <ul>
+                    <li><a href="./examples/one-column/">One-column layout, with text scrolling over the top</a></li>
+                    <li><a href="./examples/mobile-scroll/">Two-column layout, with simple scroll view on mobile</a></li>
+                    <li><a href="./examples/mobile-swipe/">Two-column layout, with swipe view on mobile</a></li>
+                </ul>
+                
+            </div>
+        
+            <footer>
+                
+                <p>All code released under the <a href="https://github.com/WSJ/two-step/blob/master/LICENSE">ISC license</a>. Pull requests welcomed.</p>
+                <p>Developed at <em>The Wall Street Journal</em> by Elliot Bentley.</p>
+                
+            </footer>
+        
+        </div>
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.min.js"></script>
+        <script src="//code.jquery.com/jquery-latest.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fixto/0.5.0/fixto.min.js"></script>
+        <script src="./dist/two-step.js" type="text/javascript" charset="utf-8"></script>
+
+        <script>
+        var ts = new TwoStep({
+            elements: document.querySelectorAll('.narrative-item'),
+            onChange: function(event) {
+                console.log('Slide '+event.index);
+            },
+            offset:{'down':"50%",'up':"0"},
+            stick: document.querySelector('.rightcol'),
+            narrative: [
+                function(event) {
+                    $('.chart').text('TwoStep has kicked in');
+                },
+                function(event) {
+                    $('.chart').text('Yes. Yes it is');
+                },
+                function(event) {
+                    $('.chart').text('... but see below for examples that are!');
+                }
+            ]
+        });
+        // ts.goTo(0);
+
+        </script>
+      
+    </body>
+</html>

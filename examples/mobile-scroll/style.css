@@ -1,0 +1,42 @@
+body {
+    margin-bottom: 1000px;
+}
+.parent {
+    display: flex;
+    max-width: 800px;
+    margin: 50px auto;
+}
+.narrative {
+    width: 33.3%;
+}
+.narrative-item {
+    min-height: 300px;
+    color: #ccc;
+    transition: color 200ms;
+}
+.narrative-item.active {
+    color: black;
+}
+.rightcol {
+    width: 66.6%;
+}
+
+.mobile-chart {
+    display: none;
+}
+
+@media screen and (max-width: 700px) {
+    .narrative {
+        width: 100%;
+    }
+    .rightcol {
+        display: none;
+    }
+    .mobile-chart {
+        display: block;
+    }
+    .narrative-item {
+        color: black;
+        height: auto;
+    }
+}

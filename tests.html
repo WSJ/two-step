@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.20.0.css" type="text/css">
+
+    </head>
+    <body>
+
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.min.js"></script>
+        <script src="./dist/two-step.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fixto/0.5.0/fixto.min.js"></script>
+        <script src="https://code.jquery.com/qunit/qunit-1.20.0.js" type="text/javascript"></script>
+        
+        <style>
+        body {
+            padding-bottom: 3000px;
+        }
+        #qunit-fixture {
+            position: static;
+        }
+        #qunit-fixture > div {
+            height: 500px;
+        }
+        </style>
+
+        <script>
+        
+        window.scrollTo(0, 0);
+        var fixture = $('#qunit-fixture');
+        var twoColTemplate = "\n  <div style=\"display: flex;\">\n    <div class=\"leftcol\">\n      <div class=\"item\"></div>\n      <div class=\"item\"></div>\n      <div class=\"item\"></div>\n    </div>\n    <div class=\"rightcol\">\n      chart here\n    </div>\n  </div>\n";
+        
+        QUnit.test( "onChange", function( assert ) {
+            var done = assert.async();
+            assert.expect(4);
+            var count = 0;
+            fixture.append('<div></div><div></div>');
+            var ts = new TwoStep({
+                elements: fixture.find('div').toArray(),
+                onChange: function(event) {
+                	assert.ok(true, 'onChange called');
+                	assert.ok(event.index > -1);
+                    count++;
+                    if (count > 1) {
+                        window.scrollTo(0, 0);
+                        ts.disable();
+                        done();
+                    }
+                }
+            });
+            window.scrollTo(0, 1000);
+        });
+
+
+        QUnit.test( "Offset", function( assert ) {
+            var done = assert.async();
+
+            assert.expect(3);
+            var count = 0;
+            fixture.append('<div></div><div></div>');
+            var ts = new TwoStep({
+                elements: fixture.find('div').toArray(),
+                offset:{"up":"50%","down":"-10%"},
+                onChange: function(event){
+                    assert.ok(true, 'Offset works');
+                    count++;
+                    if (count > 2) {
+                        ts.disable();
+                        done();
+                    }
+                    else if (count > 1) {
+                        window.scrollTo(0, 0);
+                    }
+                }
+            });
+            window.scrollTo(0, 1000);
+        });
+
+        QUnit.test( "Continuous false", function( assert ) {
+            var done = assert.async();
+            assert.expect(1);
+            var count = 0;
+            fixture.append('<div></div><div></div>');
+            var ts = new TwoStep({
+                elements: fixture.find('div').toArray(),
+                continuous: false,
+                onChange: function() {
+                	assert.ok(true, 'onChange called');
+                }
+            });
+            window.scrollTo(0, 1000);
+            setTimeout(function() {
+                window.scrollTo(0, 0);
+                ts.disable();
+                done();
+            }, 100);
+        });
+        
+        QUnit.test( "narrative functions", function( assert ) {
+            var done = assert.async();
+            assert.expect(3);
+            var count = 0;
+            fixture.append('<div></div><div></div>');
+            var ts = new TwoStep({
+                elements: fixture.find('div').toArray(),
+                narrative: [
+                    function(ev) {
+                    	assert.ok(true, 'narr 1 called');
+                        count++;
+                    },
+                    function(ev) {
+                        assert.equal(count, 1, 'narr 2 after narr 1');
+                        assert.ok(true, 'narr 2 called');
+                        count++;
+                    }
+                ]
+            });
+            scrollToY(2000).then(function() {
+                ts.disable();
+                window.scrollTo(0, 0);
+                done();
+            });
+        });
+
+        QUnit.test( "wrong number of narrative functions", function( assert ) {
+            fixture.append('<div></div><div></div>');
+            assert.throws(function() {
+                var ts = new TwoStep({
+                    elements: fixture.find('div').toArray(),
+                    narrative: [
+                        function(ev) {}
+                    ]
+                });                
+            }, /Elements and narrative are different lengths/g);
+        });
+        
+        QUnit.test( "no elements", function( assert ) {
+            assert.throws(function() {
+                var ts = new TwoStep({
+                    elements: fixture.find('div').toArray(),
+                    narrative: [
+                        function(ev) {}
+                    ]
+                });                
+            }, /Elements array is empty/g);
+        });
+        
+        QUnit.test( "keyboard controls", function( assert ) {
+            window.scrollTo(0, 0);
+            var done = assert.async();
+            assert.expect(5);
+            fixture.append('<div></div><div></div>');
+            var count = 0;
+            var ts = new TwoStep({
+                elements: fixture.find('div').toArray(),
+                onChange: function(ev) {
+                    count++;
+                    ts.disable();
+                    assert.ok(true, 'onChange called');
+                    if (count === 1) {
+                        setTimeout(function() {
+                            window.scrollTo(0, 0);
+                            done();
+                        }, 600);
+                    }
+                }
+            });
+            assert.equal(ts.index, -1, 'index is -1');
+            // trigger up key
+            $('body').trigger({type: 'keydown', which: 38, keyCode: 38, metaKey: false });
+            assert.equal(ts.index, -1, 'index is -1');
+            // trigger down key
+            $('body').trigger({type: 'keydown', which: 40, keyCode: 40, metaKey: false });
+            assert.equal(ts.index, 0, 'index is 0');
+            $('body').trigger({type: 'keydown', which: 40, keyCode: 40, metaKey: false });
+            assert.equal(ts.index, 0, 'index is 0');
+        });
+        
+        QUnit.test( "bad goTo calls", function( assert ) {
+            fixture.append('<div></div><div></div>');
+            var ts = new TwoStep({
+                elements: fixture.find('div').toArray()
+            });                
+            assert.throws(function() {
+                ts.goTo(-1);
+            }, /-1 is not a valid index/g);
+            assert.throws(function() {
+                ts.goTo(2);
+            }, /2 is not a valid index/g);
+        });
+        
+
+        QUnit.test( "goTo with scroll", function( assert ) {
+            var done = assert.async();
+            var count = 0;
+            fixture.append('<div></div><div></div><div></div>');
+            var ts = new TwoStep({
+                elements: fixture.find('div').toArray(),
+                onChange: function(ev) {
+                    assert.equal(ev.index, 2, 'onChange only called for div 3');
+                    count++;
+                }
+            });
+            ts.goTo(2, true).then(function() {
+                ts.disable();
+                assert.equal(count, 1, 'onChange only called once');
+                window.scrollTo(0, 0);
+                done();
+            });
+        });
+
+        QUnit.test( "sticky element", function( assert ) {
+            fixture.html(twoColTemplate);
+            var ts = new TwoStep({
+                elements: fixture.find('.item').toArray(),
+                stick: fixture.find('.rightcol')[0]
+            });
+            assert.ok(fixture.find('.rightcol .two-step-sticky-wrapper'), 'sticky wrapper applied');
+        });
+        
+        
+        function scrollToY(y, onComplete) {
+            return $('html, body').animate({
+                scrollTop: y
+            }, 50)
+            .promise()
+            .then(function() {
+                if (onComplete) {
+                    onComplete();
+                }
+            });
+        }
+        
+        </script>
+        
+
+
+    </body>
+</html>

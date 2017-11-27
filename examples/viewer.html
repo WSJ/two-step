@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+        </style>
+
+    </head>
+    <body>
+                
+        <script src="//code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/github.min.css" />
+        
+                
+        <script>
+        
+        var slug = window.location.search.replace('?','');
+        $('body').append(
+            '<h1>' + slug + ' <small>(<a href="./' + slug + '/">view live</a>)</small></h1>'
+        );
+        
+        var files = [
+            'index.html',
+            'style.css',
+            'script.js'
+        ];
+        
+        var requests = files.map(function(file) {
+            return $.get('./' + slug + '/' + file, null, null, 'text');
+        });
+        $.when.apply($, requests).then(function() {
+            var responses = Array.from(arguments);
+            responses.forEach(function(response, i) {
+                var el = '<h2>' + files[i] + '</h2><pre><code></code></pre>';
+                $('body').append(el);
+                var code = $('code').eq(-1);
+                code.text(response[0])
+                hljs.highlightBlock(code[0]); 
+            });
+        });
+        
+        </script>
+        
+    </body>
+</html>
