@@ -309,11 +309,12 @@ var _class = function () {
                     return true;
                 }
                 var direction = (0, _keycodeToDirection2.default)(e.keyCode);
+                var directionString = direction === -1 ? 'up' : 'down';
                 var activeInstances = tsManager.getActiveInstances();
                 if (direction !== 0 && e.target === document.body && e.metaKey === false && activeInstances.length === 1) {
                     var newIndex = _this3.index + direction;
                     if (_this3.isValidIndex(newIndex)) {
-                        _this3.goTo(newIndex, true);
+                        _this3.goTo(newIndex, true, directionString);
                         e.preventDefault();
                         return false;
                     }

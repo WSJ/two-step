@@ -124,6 +124,7 @@ export default class {
                 return true;
             }
             const direction = keycodeToDirection(e.keyCode);
+            const directionString = direction === -1 ? 'up' : 'down';
             const activeInstances = tsManager.getActiveInstances();
             if (
                 (direction !== 0) &&
@@ -133,7 +134,7 @@ export default class {
             ) {
                 const newIndex = this.index + direction;
                 if (this.isValidIndex(newIndex)) {
-                    this.goTo(newIndex, true);
+                    this.goTo(newIndex, true, directionString);
                     e.preventDefault();
                     return false;
                 }
