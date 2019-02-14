@@ -206,6 +206,7 @@ var _class = function () {
         this.enabled = true;
 
         this.offset = opts.hasOwnProperty('offset') ? opts.offset : { 'down': "50%", 'up': "0" };
+        this.goToOffset = opts.hasOwnProperty('goToOffset') ? opts.goToOffset : -100;
 
         var waypointsDown = this.setWaypoints(this.elements, waypointHandlerDown, opts.continuous, this.offset.down);
         var waypointsUp = this.setWaypoints(this.elements, waypointHandlerUp, opts.continuous, this.offset.up);
@@ -279,7 +280,7 @@ var _class = function () {
             if (scrollThere === true) {
                 this.disableWaypoints();
                 return $('html, body').animate({
-                    scrollTop: $target.offset().top - 100
+                    scrollTop: $target.offset().top + this.goToOffset
                 }, 500).promise().then(function () {
                     _this2.enableWaypoints();
                 });

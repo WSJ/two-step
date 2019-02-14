@@ -32,6 +32,7 @@ export default class {
         this.enabled = true;
 
         this.offset = opts.hasOwnProperty('offset') ? opts.offset : {'down':"50%",'up':"0"};
+        this.goToOffset = opts.hasOwnProperty('goToOffset') ? opts.goToOffset : -100;
     
         const waypointsDown = this.setWaypoints(this.elements, waypointHandlerDown, opts.continuous, this.offset.down);
         const waypointsUp = this.setWaypoints(this.elements, waypointHandlerUp, opts.continuous, this.offset.up);
@@ -101,7 +102,7 @@ export default class {
         if (scrollThere === true) {
             this.disableWaypoints();
             return $('html, body').animate({
-                scrollTop: $target.offset().top - 100
+                scrollTop: $target.offset().top + this.goToOffset
             }, 500).promise().then(() => {
                 this.enableWaypoints();
             });
