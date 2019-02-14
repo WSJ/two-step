@@ -45,6 +45,7 @@ Only `elements` is required. All others are optional.
 - `onChange`: Called when any/every element is activated. Called with [event object](#event-object) as argument.
 - `stick`: DOM node to stick in right rail (i.e. your sticky chart).
 - `offset`: Object to manually set the offset for both directions. Must include both an up and down key and both values should be strings (i.e. `{up:"50%",down:"0"}`)
+- `goToOffset`: Offset in px for scrolling to Elements using goTo. If you have a fixed Navigation 200px high, set it to `-200`. Default is `-100` for compatibility reasons.
 
 ## Event object
 
