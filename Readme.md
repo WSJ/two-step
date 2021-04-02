@@ -1,3 +1,5 @@
+Note: This library has been deprecated and the repo is no longer being maintained. See [alternatives](https://github.com/WSJ/two-step#alternatives-to-twostep) for other options.
+
 # TwoStep
 
 This is a JavaScript library for scrollytelling, which is dynamically changing charts (or triggering whatever) as text scrolls into view. It implements best practices for scrollytelling, which means built-in keyboard shortcuts, no scrolljacking and reliable "sticky" behaviour.
